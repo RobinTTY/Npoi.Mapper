@@ -11,21 +11,15 @@ namespace Robintty.Npoi.Mapper
     public static class AnonymousTypeFactory
     {
         private static readonly ModuleBuilder ModuleBuilder;
-        private static readonly object SyncRoot = new object();
+        private static readonly object SyncRoot = new();
 
         // TODO: understand why this is needed and what it does, can it be replaced with something better?
         static AnonymousTypeFactory()
         {
             var assemblyName = new AssemblyName { Name = "MyAnonymousTypes" };
 
-#if NET45 || NET40
-            var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
-            ModuleBuilder = assemblyBuilder.DefineDynamicModule(assemblyName.Name);
-#else
             var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
             ModuleBuilder = assemblyBuilder.DefineDynamicModule(assemblyName.Name);
-#endif
-
         }
 
         // This version of the static constructor can be used temporarily to save the dynamic DLL to get a copy of the generated IL.
@@ -181,6 +175,7 @@ namespace Robintty.Npoi.Mapper
             return genericTypeDefinition;
         }
 
+        // TODO: what is going on here??? Why is there some kind of dynamic code generation???
         private static string GenerateGenericTypeDefinitionName(ICollection<string> propertyNames, bool isMutable, Type parent)
         {
             // A real anonymous type is named something like "<>f__AnonymousType0`2" (for the first anonymous type generated with two properties).
@@ -307,11 +302,7 @@ namespace Robintty.Npoi.Mapper
             ).ToArray();
             DefineToStringMethod(typeBuilder, fieldPairs);
 
-#if NET40
-            return typeBuilder.CreateType();
-#else
             return typeBuilder.CreateTypeInfo();
-#endif
         }
 
         private static void DefineDefaultConstructor(TypeBuilder typeBuilder, ConstructorInfo baseConstructor = null)
