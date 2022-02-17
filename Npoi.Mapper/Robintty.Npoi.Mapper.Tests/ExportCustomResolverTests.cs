@@ -1,8 +1,7 @@
 ﻿using NUnit.Framework;
-using Robintty.Npoi.Mapper;
-using test.Sample;
+using Robintty.Npoi.Mapper.Tests.Sample;
 
-namespace test
+namespace Robintty.Npoi.Mapper.Tests
 {
     [TestFixture]
     public class ExportCustomResolverTests : TestBase

@@ -3,19 +3,13 @@ using System.IO;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 
-namespace test
+namespace Robintty.Npoi.Mapper.Tests
 {
     /// <summary>
     /// Base class for test classes.
     /// </summary>
     public abstract class TestBase
     {
-        protected Stream InputWorkbookStream { get; set; }
-
-        protected IWorkbook Workbook { get; set; }
-
-        #region Protected Methods
-
         /// <summary>
         /// Gets a workbook with 2 sheets("sheet1" and "sheet2") and with 2 rows in "sheet2":
         /// <para>DateProperty StringProperty</para>
@@ -68,7 +62,5 @@ namespace test
 
             return WorkbookFactory.Create(fileName);
         }
-
-        #endregion
     }
 }

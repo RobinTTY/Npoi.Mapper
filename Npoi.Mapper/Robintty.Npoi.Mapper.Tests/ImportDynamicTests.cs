@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
-using Robintty.Npoi.Mapper;
 
-namespace test
+namespace Robintty.Npoi.Mapper.Tests
 {
     [TestFixture]
     public class ImportDynamicTests : TestBase

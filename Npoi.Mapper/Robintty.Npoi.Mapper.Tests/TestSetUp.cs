@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 
-namespace test
+namespace Robintty.Npoi.Mapper.Tests
 {
     /// <summary>
     /// Contains setup and teardown for all text fixtures in a given namespace.

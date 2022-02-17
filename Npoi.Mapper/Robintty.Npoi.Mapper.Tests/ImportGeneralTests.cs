@@ -4,11 +4,10 @@ using System.Linq;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using NUnit.Framework;
-using Robintty.Npoi.Mapper;
 using Robintty.Npoi.Mapper.Extensions;
-using test.Sample;
+using Robintty.Npoi.Mapper.Tests.Sample;
 
-namespace test
+namespace Robintty.Npoi.Mapper.Tests
 {
     [TestFixture]
     public class ImportGeneralTests : TestBase

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Robintty.Npoi.Mapper.Attributes;
 
-namespace test.Sample
+namespace Robintty.Npoi.Mapper.Tests.Sample
 {
     /// <summary>
     /// Sample class for testing purpose.

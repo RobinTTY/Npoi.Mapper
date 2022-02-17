@@ -1,4 +1,4 @@
-﻿namespace test.Sample
+﻿namespace Robintty.Npoi.Mapper.Tests.Sample
 {
     /// <summary>
     /// Sample enum for testing purpose.

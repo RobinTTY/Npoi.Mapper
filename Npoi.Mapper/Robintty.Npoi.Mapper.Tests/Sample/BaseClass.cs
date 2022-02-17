@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Robintty.Npoi.Mapper.Attributes;
+﻿using Robintty.Npoi.Mapper.Attributes;
 
-namespace test.Sample
+namespace Robintty.Npoi.Mapper.Tests.Sample
 {
     /// <summary>
     /// The base class for sample classes.
