@@ -1,16 +1,17 @@
 ﻿namespace Robintty.Npoi.Mapper
 {
     /// <summary>
-    /// Information for one row that read from file.
+    /// Information about a single row of an Excel worksheet.
     /// </summary>
     /// <typeparam name="TTarget">The target mapping type for a row.</typeparam>
     public class RowInfo<TTarget> : IRowInfo
     {
         /// <summary>
-        /// Row number.
+        /// The row number.
         /// </summary>
         public int RowNumber { get; set; }
 
+        // TODO: what values can this have?
         /// <summary>
         /// Constructed value object from the row.
         /// </summary>
@@ -22,17 +23,17 @@
         public int ErrorColumnIndex { get; set; }
 
         /// <summary>
-        /// Error message for the first error.
+        /// Error message of the first error.
         /// </summary>
         public string ErrorMessage { get; set; }
 
         /// <summary>
-        /// Initialize a new RowData object.
+        /// Creates a new RowData object.
         /// </summary>
-        /// <param name="rowNumber">The row number</param>
-        /// <param name="value">Constructed value object from the row</param>
-        /// <param name="errorColumnIndex">Column index of the first error cell</param>
-        /// <param name="errorMessage">The error message</param>
+        /// <param name="rowNumber">The row number.</param>
+        /// <param name="value">Constructed value object from the row.</param>
+        /// <param name="errorColumnIndex">Column index of the first error.</param>
+        /// <param name="errorMessage">Error message of the first error.</param>
         public RowInfo(int rowNumber, TTarget value, int errorColumnIndex, string errorMessage)
         {
             RowNumber = rowNumber;
