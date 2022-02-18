@@ -6,8 +6,6 @@
     /// <typeparam name="TTarget">The target mapping type for a row.</typeparam>
     public class RowInfo<TTarget> : IRowInfo
     {
-        #region Properties
-
         /// <summary>
         /// Row number.
         /// </summary>
@@ -28,10 +26,6 @@
         /// </summary>
         public string ErrorMessage { get; set; }
 
-        #endregion
-
-        #region Constructors
-
         /// <summary>
         /// Initialize a new RowData object.
         /// </summary>
@@ -46,7 +40,5 @@
             ErrorColumnIndex = errorColumnIndex;
             ErrorMessage = errorMessage;
         }
-
-        #endregion
     }
 }

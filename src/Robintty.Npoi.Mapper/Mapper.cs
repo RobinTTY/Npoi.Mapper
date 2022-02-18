@@ -15,9 +15,6 @@ namespace Robintty.Npoi.Mapper
     /// </summary>
     public class Mapper
     {
-        #region Fields
-
-        // Current working workbook.
         private IWorkbook _workbook;
 
         private Func<IColumnInfo, bool> _columnFilter;
@@ -25,39 +22,35 @@ namespace Robintty.Npoi.Mapper
         private Func<IColumnInfo, object, bool> _defaultPutResolver;
         private Action<ICell> _headerAction;
 
-        #endregion
-
-        #region Properties
-
-        // Instance of helper class.
-        private MapHelper Helper = new MapHelper();
-
-        // Stores formats for type rather than specific property.
-        internal readonly Dictionary<Type, string> TypeFormats = new Dictionary<Type, string>();
-
-        // PropertyInfo map to ColumnAttribute
-        private Dictionary<PropertyInfo, ColumnAttribute> Attributes { get; } = new Dictionary<PropertyInfo, ColumnAttribute>();
-
-        // Property name map to ColumnAttribute
-        private Dictionary<string, ColumnAttribute> DynamicAttributes { get; } = new Dictionary<string, ColumnAttribute>();
-
+        private readonly MapHelper _helper = new();
+        /// <summary>
+        /// Stores formats for type rather than specific property.
+        /// </summary>
+        internal readonly Dictionary<Type, string> TypeFormats = new();
+        /// <summary>
+        /// PropertyInfo map to ColumnAttribute
+        /// </summary>
+        private Dictionary<PropertyInfo, ColumnAttribute> Attributes { get; } = new();
+        /// <summary>
+        /// Property name map to ColumnAttribute
+        /// </summary>
+        private Dictionary<string, ColumnAttribute> DynamicAttributes { get; } = new();
         /// <summary>
         /// Cache the tracked <see cref="ColumnInfo"/> objects by sheet name and target type.
         /// </summary>
-        private Dictionary<string, Dictionary<Type, List<object>>> TrackedColumns { get; } =
-            new Dictionary<string, Dictionary<Type, List<object>>>();
+        private Dictionary<string, Dictionary<Type, List<object>>> TrackedColumns { get; } = new();
 
         /// <summary>
         /// Sheet name map to tracked objects in dictionary with row number as key.
         /// </summary>
-        public Dictionary<string, Dictionary<int, object>> Objects { get; } = new Dictionary<string, Dictionary<int, object>>();
+        public Dictionary<string, Dictionary<int, object>> Objects { get; } = new();
 
         /// <summary>
         /// The Excel workbook.
         /// </summary>
         public IWorkbook Workbook
         {
-            get { return _workbook; }
+            get => _workbook;
 
             private set
             {
@@ -65,7 +58,7 @@ namespace Robintty.Npoi.Mapper
                 {
                     Objects.Clear();
                     TrackedColumns.Clear();
-                    Helper.ClearCache();
+                    _helper.ClearCache();
                 }
                 _workbook = value;
             }
@@ -99,10 +92,7 @@ namespace Robintty.Npoi.Mapper
         /// </summary>
         public int FirstRowIndex { get; set; } = -1;
 
-        #endregion
-
-        #region Constructors
-
+        // TODO: is this constructor necessary? When would we use it without params???
         /// <summary>
         /// Initialize a new instance of <see cref="Mapper"/> class.
         /// </summary>
@@ -131,10 +121,7 @@ namespace Robintty.Npoi.Mapper
         /// <param name="workbook">The input IWorkbook object.</param>
         public Mapper(IWorkbook workbook)
         {
-            if (workbook == null)
-                throw new ArgumentNullException(nameof(workbook));
-
-            Workbook = workbook;
+            Workbook = workbook ?? throw new ArgumentNullException(nameof(workbook));
         }
 
         /// <summary>
@@ -144,10 +131,6 @@ namespace Robintty.Npoi.Mapper
         public Mapper(string filePath) : this(new FileStream(filePath, FileMode.Open))
         {
         }
-
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
         /// Use this to include and map columns for custom complex resolution.
@@ -346,8 +329,8 @@ namespace Robintty.Npoi.Mapper
         {
             if (Workbook == null) return;
 
-            using (var fs = File.Open(path, FileMode.Create, FileAccess.Write))
-                Workbook.Write(fs);
+            using var fs = File.Open(path, FileMode.Create, FileAccess.Write);
+            Workbook.Write(fs);
         }
 
         /// <summary>
@@ -372,8 +355,8 @@ namespace Robintty.Npoi.Mapper
         {
             if (Workbook == null && !overwrite) LoadWorkbookFromFile(path);
 
-            using (var fs = File.Open(path, FileMode.Create, FileAccess.Write))
-                Save(fs, objects, sheetName, overwrite, xlsx);
+            using var fs = File.Open(path, FileMode.Create, FileAccess.Write);
+            Save(fs, objects, sheetName, overwrite, xlsx);
         }
 
         /// <summary>
@@ -389,8 +372,8 @@ namespace Robintty.Npoi.Mapper
         {
             if (Workbook == null && !overwrite) LoadWorkbookFromFile(path);
 
-            using (var fs = File.Open(path, FileMode.Create, FileAccess.Write))
-                Save(fs, objects, sheetIndex, overwrite, xlsx);
+            using var fs = File.Open(path, FileMode.Create, FileAccess.Write);
+            Save(fs, objects, sheetIndex, overwrite, xlsx);
         }
 
         /// <summary>
@@ -439,8 +422,8 @@ namespace Robintty.Npoi.Mapper
         {
             if (Workbook == null && !overwrite) LoadWorkbookFromFile(path);
 
-            using (var fs = File.Open(path, FileMode.Create, FileAccess.Write))
-                Save<T>(fs, sheetName, overwrite, xlsx);
+            using var fs = File.Open(path, FileMode.Create, FileAccess.Write);
+            Save<T>(fs, sheetName, overwrite, xlsx);
         }
 
         /// <summary>
@@ -455,8 +438,8 @@ namespace Robintty.Npoi.Mapper
         {
             if (Workbook == null && !overwrite) LoadWorkbookFromFile(path);
 
-            using (var fs = File.Open(path, FileMode.Create, FileAccess.Write))
-                Save<T>(fs, sheetIndex, overwrite, xlsx);
+            using var fs = File.Open(path, FileMode.Create, FileAccess.Write);
+            Save<T>(fs, sheetIndex, overwrite, xlsx);
         }
 
         /// <summary>
@@ -493,12 +476,7 @@ namespace Robintty.Npoi.Mapper
             Save<T>(stream, sheet, overwrite);
         }
 
-        #endregion
-
-        #region Private Methods
-
-        #region Import
-
+        // TODO: Why isn't this method public? I would expect to use the Take method in the context of a sheet since you always take values from a sheet not from a workbook directly
         private IEnumerable<RowInfo<T>> Take<T>(ISheet sheet, int maxErrorRows, Func<T> objectInitializer = null) where T : class
         {
             if (sheet == null || sheet.PhysicalNumberOfRows < 1)
@@ -523,7 +501,7 @@ namespace Robintty.Npoi.Mapper
             var columns = GetColumns(firstRow, targetType);
 
             // Detect column format based on the first non-null cell.
-            Helper.LoadDataFormats(sheet, HasHeader ? firstRowIndex + 1 : firstRowIndex, columns, TypeFormats);
+            _helper.LoadDataFormats(sheet, HasHeader ? firstRowIndex + 1 : firstRowIndex, columns, TypeFormats);
 
             if (TrackObjects) Objects[sheet.SheetName] = new Dictionary<int, object>();
 
@@ -560,7 +538,7 @@ namespace Robintty.Npoi.Mapper
             foreach (var header in firstRow)
             {
                 var column = GetColumnInfoByDynamicAttribute(header);
-                var type = Helper.InferColumnDataType(sheet, HasHeader ? firstRowIndex : -1, header.ColumnIndex);
+                var type = _helper.InferColumnDataType(sheet, HasHeader ? firstRowIndex : -1, header.ColumnIndex);
 
                 if (column != null)
                 {
@@ -594,19 +572,21 @@ namespace Robintty.Npoi.Mapper
             return AnonymousTypeFactory.CreateType(names, true);
         }
 
+        /// <summary>
+        /// Column mapping priority:
+        /// Map&lt;T&gt; > ColumnAttribute > naming convention > column filter.
+        /// </summary>
+        /// <param name="headerRow"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         private List<ColumnInfo> GetColumns(IRow headerRow, Type type)
         {
-            //
-            // Column mapping priority:
-            // Map<T> > ColumnAttribute > naming convention > column filter.
-            //
-
             var sheetName = headerRow.Sheet.SheetName;
             var columns = new List<ColumnInfo>();
             var columnsCache = new List<object>(); // Cached for export usage.
 
             // Prepare a list of ColumnInfo by the first row.
-            foreach (ICell header in headerRow)
+            foreach (var header in headerRow)
             {
                 // Custom mappings via attributes.
                 var column = GetColumnInfoByAttribute(header, type);
@@ -855,10 +835,6 @@ namespace Robintty.Npoi.Mapper
             Workbook = WorkbookFactory.Create(new FileStream(path, FileMode.Open));
         }
 
-        #endregion
-
-        #region Export
-
         private void Put<T>(ISheet sheet, IEnumerable<T> objects, bool overwrite)
         {
             var sheetName = sheet.SheetName;
@@ -1027,17 +1003,17 @@ namespace Robintty.Npoi.Mapper
             {
                 cell.SetCellValue((string)null);
             }
-            else if (value is DateTime)
+            else if (value is DateTime time)
             {
-                cell.SetCellValue((DateTime)value);
+                cell.SetCellValue(time);
             }
             else if (value.GetType().IsNumeric())
             {
                 cell.SetCellValue(Convert.ToDouble(value));
             }
-            else if (value is bool)
+            else if (value is bool b)
             {
-                cell.SetCellValue((bool)value);
+                cell.SetCellValue(b);
             }
             else
             {
@@ -1046,14 +1022,10 @@ namespace Robintty.Npoi.Mapper
 
             if (column != null && setStyle)
             {
-                column.SetCellStyle(cell, value, isHeader, TypeFormats, Helper);
+                column.SetCellStyle(cell, value, isHeader, TypeFormats, _helper);
             }
         }
 
-        #endregion Export
-
         private int GetFirstRowIndex(ISheet sheet) => FirstRowIndex >= 0 ? FirstRowIndex : sheet.FirstRowNum;
-
-        #endregion
     }
 }
