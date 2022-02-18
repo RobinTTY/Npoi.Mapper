@@ -9,17 +9,11 @@ namespace Robintty.Npoi.Mapper
     /// </summary>
     public class ColumnInfo : IColumnInfo
     {
-        #region Fields
-
         // For cache purpose, avoid lookup style dictionary for every cell.
         private ICellStyle _headerStyle;
         private ICellStyle _dataStyle;
         private bool _headerStyleCached;
         private bool _dataStyleCached;
-
-        #endregion
-
-        #region Properties
 
         /// <summary>
         /// Value for the column header.
@@ -50,10 +44,6 @@ namespace Robintty.Npoi.Mapper
         /// Get or set the data cell format.
         /// </summary>
         public short? DataFormat { get; set; }
-
-        #endregion
-
-        #region Constructors
 
         /// <summary>
         /// Initialize a new instance of <see cref="ColumnInfo"/> class.
@@ -100,10 +90,6 @@ namespace Robintty.Npoi.Mapper
             Attribute = attribute;
             HeaderValue = headerValue;
         }
-
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
         /// Refresh LastNonBlankValue and CurrentValue property then return value according UseLastNonBlankValue property.
@@ -166,7 +152,5 @@ namespace Robintty.Npoi.Mapper
 
             cell.CellStyle = isHeader ? _headerStyle : _dataStyle;
         }
-
-        #endregion
     }
 }

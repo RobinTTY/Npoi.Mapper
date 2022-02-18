@@ -8,7 +8,7 @@
         /// <summary>
         /// Collection of numeric types.
         /// </summary>
-        private static readonly List<Type> NumericTypes = new List<Type>
+        private static readonly List<Type> NumericTypes = new()
         {
             typeof(decimal),
             typeof(byte), typeof(sbyte),

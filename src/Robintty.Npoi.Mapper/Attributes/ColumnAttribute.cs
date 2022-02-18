@@ -10,8 +10,6 @@ namespace Robintty.Npoi.Mapper.Attributes
     [AttributeUsage(AttributeTargets.Property)]
     public sealed class ColumnAttribute : Attribute
     {
-        #region Properties
-
         /// <summary>
         /// Column index.
         /// </summary>
@@ -93,10 +91,6 @@ namespace Robintty.Npoi.Mapper.Attributes
         /// </summary>
         internal Func<IColumnInfo, object, bool> TryPut { get; set; }
 
-        #endregion
-
-        #region Constructors
-
         /// <summary>
         /// Initialize a new instance of <see cref="ColumnAttribute"/> class.
         /// </summary>
@@ -120,10 +114,6 @@ namespace Robintty.Npoi.Mapper.Attributes
         {
             Name = name;
         }
-
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
         /// Get a member wise clone of this object.
@@ -215,13 +205,11 @@ namespace Robintty.Npoi.Mapper.Attributes
                 attributes[pi] = this;
             }
 
-            if (isIndexSet) // True if the index set successfully, otherwise it's been ignored/ cleared.
+            if (isIndexSet) // True if the index set successfully, otherwise it's been ignored/cleared.
             {
                 // Clear other attributes' Index if they have same index.
                 attributes.Where(p => p.Key != pi && p.Value.Index == Index).ForEach(p => p.Value.Index = -1);
             }
         }
-
-        #endregion
     }
 }

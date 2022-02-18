@@ -13,17 +13,15 @@ namespace Robintty.Npoi.Mapper
     /// </summary>
     public class MapHelper
     {
-        #region Fields
-
         /// <summary>
         /// Stores cached built-in styles to avoid create new ICellStyle for each cell.
         /// </summary>
-        private readonly Dictionary<short, ICellStyle> _builtinStyles = new Dictionary<short, ICellStyle>();
+        private readonly Dictionary<short, ICellStyle> _builtinStyles = new();
 
         /// <summary>
         /// Stores cached custom styles to avoid create new ICellStyle for each customized cell.
         /// </summary>
-        private readonly Dictionary<string, ICellStyle> _customStyles = new Dictionary<string, ICellStyle>();
+        private readonly Dictionary<string, ICellStyle> _customStyles = new();
 
         // Column chars that will be used for Excel columns.
         // e.g. Column A is the first column, Column AA is the 27th column.
@@ -62,10 +60,6 @@ namespace Robintty.Npoi.Mapper
         /// The maximum row number during the detection for column type and style.
         /// </summary>
         public int MaxLookupRowNum { get; set; } = 20;
-
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
         /// Loads attributes to a dictionary.
@@ -485,8 +479,6 @@ namespace Robintty.Npoi.Mapper
 
             return type;
         }
-
-        #endregion
 
         internal static void EnsureDefaultFormats(IEnumerable<IColumnInfo> columns, Dictionary<Type, string> defaultFormats)
         {

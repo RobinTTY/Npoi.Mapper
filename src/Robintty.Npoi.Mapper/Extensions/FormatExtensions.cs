@@ -12,7 +12,7 @@
         /// <param name="propertyType">The type of property to format.</param>
         /// <param name="customFormat">The custom format for the specified type.</param>
         /// <returns>The <see cref="Mapper"/> itself.</returns>
-        public static global::Robintty.Npoi.Mapper.Mapper UseFormat(this global::Robintty.Npoi.Mapper.Mapper mapper, Type propertyType, string customFormat)
+        public static Mapper UseFormat(this Mapper mapper, Type propertyType, string customFormat)
         {
             if (mapper == null) throw new ArgumentNullException(nameof(mapper));
             if (propertyType == null) throw new ArgumentNullException(nameof(propertyType));

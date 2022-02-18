@@ -18,7 +18,7 @@ namespace Robintty.Npoi.Mapper.Extensions
         /// <param name="tryTake">The function try to import from cell value to the target object.</param>
         /// <param name="tryPut">The function try to export source object to the cell.</param>
         /// <returns>The mapper object.</returns>
-        public static global::Robintty.Npoi.Mapper.Mapper Map(this global::Robintty.Npoi.Mapper.Mapper mapper, string columnName, PropertyInfo propertyInfo,
+        public static Mapper Map(this Mapper mapper, string columnName, PropertyInfo propertyInfo,
             Func<IColumnInfo, object, bool> tryTake = null,
             Func<IColumnInfo, object, bool> tryPut = null)
         {
