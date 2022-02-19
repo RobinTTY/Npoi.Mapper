@@ -46,7 +46,7 @@ namespace Robintty.Npoi.Mapper.Extensions
         /// <param name="tryTake">The function try to import from cell value to the target object.</param>
         /// <param name="tryPut">The function try to export source object to the cell.</param>
         /// <returns>The mapper object.</returns>
-        public static global::Robintty.Npoi.Mapper.Mapper Map(this global::Robintty.Npoi.Mapper.Mapper mapper, ushort columnIndex, PropertyInfo propertyInfo,
+        public static Mapper Map(this Mapper mapper, ushort columnIndex, PropertyInfo propertyInfo,
             Func<IColumnInfo, object, bool> tryTake = null,
             Func<IColumnInfo, object, bool> tryPut = null)
         {
@@ -74,7 +74,7 @@ namespace Robintty.Npoi.Mapper.Extensions
         /// <param name="tryTake">The function try to import from cell value to the target object.</param>
         /// <param name="tryPut">The function try to export source object to the cell.</param>
         /// <returns>The mapper object.</returns>
-        public static global::Robintty.Npoi.Mapper.Mapper Map<T>(this global::Robintty.Npoi.Mapper.Mapper mapper, string columnName, string propertyName,
+        public static Mapper Map<T>(this Mapper mapper, string columnName, string propertyName,
             Func<IColumnInfo, object, bool> tryTake = null,
             Func<IColumnInfo, object, bool> tryPut = null)
         {
@@ -110,7 +110,7 @@ namespace Robintty.Npoi.Mapper.Extensions
         /// <param name="tryTake">The function try to import from cell value to the target object.</param>
         /// <param name="tryPut">The function try to export source object to the cell.</param>
         /// <returns>The mapper object.</returns>
-        public static global::Robintty.Npoi.Mapper.Mapper Map<T>(this global::Robintty.Npoi.Mapper.Mapper mapper, string columnName, Expression<Func<T, object>> propertySelector,
+        public static Mapper Map<T>(this Mapper mapper, string columnName, Expression<Func<T, object>> propertySelector,
             Func<IColumnInfo, object, bool> tryTake = null,
             Func<IColumnInfo, object, bool> tryPut = null)
         {
@@ -134,7 +134,7 @@ namespace Robintty.Npoi.Mapper.Extensions
         /// <param name="tryTake">The function try to import from cell value to the target object.</param>
         /// <param name="tryPut">The function try to export source object to the cell.</param>
         /// <returns>The mapper object.</returns>
-        public static global::Robintty.Npoi.Mapper.Mapper Map<T>(this global::Robintty.Npoi.Mapper.Mapper mapper, ushort columnIndex, string propertyName,
+        public static Mapper Map<T>(this Mapper mapper, ushort columnIndex, string propertyName,
             Func<IColumnInfo, object, bool> tryTake = null,
             Func<IColumnInfo, object, bool> tryPut = null)
         {
@@ -169,7 +169,7 @@ namespace Robintty.Npoi.Mapper.Extensions
         /// <param name="tryTake">The function try to import from cell value to the target object.</param>
         /// <param name="tryPut">The function try to export source object to the cell.</param>
         /// <returns>The mapper object.</returns>
-        public static global::Robintty.Npoi.Mapper.Mapper Map<T>(this global::Robintty.Npoi.Mapper.Mapper mapper, ushort columnIndex, Expression<Func<T, object>> propertySelector,
+        public static Mapper Map<T>(this Mapper mapper, ushort columnIndex, Expression<Func<T, object>> propertySelector,
             Func<IColumnInfo, object, bool> tryTake = null,
             Func<IColumnInfo, object, bool> tryPut = null)
         {
@@ -191,7 +191,7 @@ namespace Robintty.Npoi.Mapper.Extensions
         /// <param name="tryTake">The function try to import from cell value to the target object.</param>
         /// <param name="tryPut">The function try to export source object to the cell.</param>
         /// <returns>The mapper object.</returns>
-        public static global::Robintty.Npoi.Mapper.Mapper Map<T>(this global::Robintty.Npoi.Mapper.Mapper mapper, ushort columnIndex, Expression<Func<T, object>> propertySelector, string exportedColumnName,
+        public static Mapper Map<T>(this Mapper mapper, ushort columnIndex, Expression<Func<T, object>> propertySelector, string exportedColumnName,
             Func<IColumnInfo, object, bool> tryTake = null,
             Func<IColumnInfo, object, bool> tryPut = null)
         {
@@ -223,7 +223,7 @@ namespace Robintty.Npoi.Mapper.Extensions
         /// <param name="tryTake">The function try to import from cell value to the target object.</param>
         /// <param name="tryPut">The function try to export source object to the cell.</param>
         /// <returns>The mapper object.</returns>
-        public static global::Robintty.Npoi.Mapper.Mapper Map<T>(this global::Robintty.Npoi.Mapper.Mapper mapper, ushort columnIndex, string propertyName, string exportedColumnName,
+        public static Mapper Map<T>(this Mapper mapper, ushort columnIndex, string propertyName, string exportedColumnName,
             Func<IColumnInfo, object, bool> tryTake = null,
             Func<IColumnInfo, object, bool> tryPut = null)
         {
@@ -255,7 +255,7 @@ namespace Robintty.Npoi.Mapper.Extensions
         /// <param name="mapper">The <see cref="Mapper"/> object.</param>
         /// <param name="propertyName">The property name.</param>
         /// <returns>The mapper object.</returns>
-        public static global::Robintty.Npoi.Mapper.Mapper IgnoreErrorsFor<T>(this global::Robintty.Npoi.Mapper.Mapper mapper, string propertyName)
+        public static Mapper IgnoreErrorsFor<T>(this Mapper mapper, string propertyName)
         {
             if (propertyName == null) throw new ArgumentNullException(nameof(propertyName));
 
@@ -280,7 +280,7 @@ namespace Robintty.Npoi.Mapper.Extensions
         /// <param name="mapper">The <see cref="Mapper"/> object.</param>
         /// <param name="propertySelector">Property selector.</param>
         /// <returns>The mapper object.</returns>
-        public static global::Robintty.Npoi.Mapper.Mapper IgnoreErrorsFor<T>(this global::Robintty.Npoi.Mapper.Mapper mapper, Expression<Func<T, object>> propertySelector)
+        public static Mapper IgnoreErrorsFor<T>(this Mapper mapper, Expression<Func<T, object>> propertySelector)
         {
             var pi = MapHelper.GetPropertyInfoByExpression(propertySelector);
             if (pi == null) throw new InvalidOperationException($"Cannot find the property specified by the selector.");
@@ -301,7 +301,7 @@ namespace Robintty.Npoi.Mapper.Extensions
         /// <param name="mapper">The <see cref="Mapper"/> object.</param>
         /// <param name="propertyNames">Property names.</param>
         /// <returns>The mapper object.</returns>
-        public static global::Robintty.Npoi.Mapper.Mapper Ignore<T>(this global::Robintty.Npoi.Mapper.Mapper mapper, params string[] propertyNames)
+        public static Mapper Ignore<T>(this Mapper mapper, params string[] propertyNames)
         {
             var type = typeof(T);
 
