@@ -1,6 +1,6 @@
 # Robintty.Npoi.Mapper
 
-This is a fork of [donnytian/Npoi.Mapper](https://github.com/donnytian/Npoi.Mapper). I created it to extend the project with some functionality I personally need and to keep it more up to date since the original project has gone kind of stale.
+This is a fork of [donnytian/Npoi.Mapper](https://github.com/donnytian/Npoi.Mapper). I created it to extend the project with some functionality I personally need.
 
 ## Original Description
 
