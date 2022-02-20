@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using NUnit.Framework;
 using Robintty.Npoi.Mapper.Extensions;
@@ -12,65 +13,45 @@ namespace Robintty.Npoi.Mapper.Tests
         [Test]
         public void SingleColumnResolverTest()
         {
-            // Arrange
-            var date1 = DateTime.Now;
-            const string str1 = "aBC";
-            const string str2 = "BCD";
+            const string dotSeparatedNumber = "1.234";
+            const string commaSeparatedNumber = "5,678";
             var workbook = GetBlankWorkbook();
             var sheet = workbook.GetSheetAt(0);
             sheet.CreateRow(0);
             sheet.CreateRow(1);
+            sheet.CreateRow(2);
 
-            // We will import column with index of 51.
-            sheet.GetRow(0).CreateCell(51).SetCellValue(date1);
-            sheet.GetRow(1).CreateCell(51).SetCellValue(str1);
-
-            // Act "Take"
+            // Add some sample data to the worksheet
+            sheet.GetRow(0).CreateCell(52).SetCellValue("DotSeparatedNumberHeader");
+            sheet.GetRow(1).CreateCell(52).SetCellValue(dotSeparatedNumber);
+            sheet.GetRow(2).CreateCell(52).SetCellValue(commaSeparatedNumber);
+            
+            // Create the custom mapping
             var mapper = new Mapper(workbook);
-            mapper.Map<SampleClass>(51, o => o.SingleColumnResolverProperty,
-                (column, target) => // tryTake resolver : Custom logic to take cell value into target object.
+            mapper.Map<SampleClass>("DotSeparatedNumberHeader", o => o.ColumnResolverDecimalProperty, (column, target) =>
+            {
+                if (column.HeaderValue == null || column.CurrentValue == null) return false;
+                if (column.CurrentValue is string value)
                 {
-                    // Note: return false to indicate a failure; and that will increase error count.
-                    if (column.HeaderValue == null || column.CurrentValue == null) return false;
+                    var successfulConversion = decimal.TryParse(value, NumberStyles.AllowDecimalPoint, new CultureInfo("en-US"), out var outValue);
+                    if (!successfulConversion)
+                        successfulConversion = decimal.TryParse(value, NumberStyles.Any, new CultureInfo("de"), out outValue);
+                    if (successfulConversion)
+                        ((SampleClass) target).ColumnResolverDecimalProperty = outValue;
+                    else
+                        return false;
+                } 
+                
+                return true;
+            });
 
-                    if (column.HeaderValue is double)
-                    {
-                        column.HeaderValue = DateTime.FromOADate((double)column.HeaderValue);
-                    }
-
-                    // Custom logic to get the cell value.
-                    ((SampleClass)target).SingleColumnResolverProperty = ((DateTime)column.HeaderValue).ToLongDateString() + column.CurrentValue;
-
-                    return true;
-                },
-                (column, source) => // tryPut resolver : Custom logic to put property value into cell.
-                {
-                    if (column.HeaderValue is double)
-                    {
-                        column.HeaderValue = DateTime.FromOADate((double)column.HeaderValue);
-                    }
-
-                    var s = ((DateTime)column.HeaderValue).ToLongDateString();
-
-                    // Custom logic to set the cell value.
-                    column.CurrentValue = ((SampleClass)source).SingleColumnResolverProperty?.Remove(0, s.Length);
-
-                    return true;
-                }
-                );
-
-            var objs = mapper.Take<SampleClass>().ToList();
-
-            // Assert "Take"
-            Assert.IsNotNull(objs);
-            Assert.AreEqual(date1.ToLongDateString() + str1, objs[0].Value.SingleColumnResolverProperty);
-
-            // Act "Put"
-            objs[0].Value.SingleColumnResolverProperty = date1.ToLongDateString() + str2;
-            mapper.Put(new[] { objs[0].Value });
-
-            // Assert "Put"
-            Assert.AreEqual(str2, sheet.GetRow(1).GetCell(51).StringCellValue);
+            // Take the previously mapped SampleClass elements from the worksheet
+            var importedObjects = mapper.Take<SampleClass>().ToList();
+            Assert.IsNotNull(importedObjects);
+            Assert.AreEqual(importedObjects[0].Value.ColumnResolverDecimalProperty, 1.234);
+            Assert.AreEqual(importedObjects[1].Value.ColumnResolverDecimalProperty, 5.678);
+            
+            // TODO: implement tryPut
         }
 
         [Test]
@@ -130,7 +111,7 @@ namespace Robintty.Npoi.Mapper.Tests
                     var s = ((DateTime)column.HeaderValue).ToLongDateString();
 
                     // Custom logic to set the cell value.
-                    var sample = (SampleClass) source;
+                    var sample = (SampleClass)source;
                     if (column.Attribute.Index == 31 && sample.CollectionGenericProperty.Count > 0)
                     {
                         column.CurrentValue = sample.CollectionGenericProperty?.ToList()[0].Remove(0, s.Length);
@@ -194,7 +175,7 @@ namespace Robintty.Npoi.Mapper.Tests
             // Act
             mapper.Map<SampleClass>(0, o => o.EnumProperty, (column, obj) =>
             {
-                ((SampleClass) obj).EnumProperty = SampleEnum.Value3;
+                ((SampleClass)obj).EnumProperty = SampleEnum.Value3;
                 return true;
             }, null);
             var items = mapper.Take<SampleClass>().ToList();

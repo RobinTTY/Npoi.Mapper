@@ -38,6 +38,7 @@ namespace Robintty.Npoi.Mapper.Tests.Sample
         public ICollection<string> CollectionGenericProperty { get; set; }
 
         public string SingleColumnResolverProperty { get; set; }
+        public decimal ColumnResolverDecimalProperty { get; set; }
 
         [Column("By Name")]
         public string ColumnNameAttributeProperty { get; set; }
