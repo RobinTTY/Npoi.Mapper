@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -48,11 +49,6 @@ namespace Robintty.Npoi.Mapper
         /// Caches for type of DateTime during parsing.
         /// </summary>
         public static readonly Type DateTimeType = typeof(DateTime);
-
-        /// <summary>
-        /// Caches for type of object.
-        /// </summary>
-        public static readonly Type ObjectType = typeof(object);
 
         public static readonly Type GuidType = typeof(Guid);
 
@@ -480,6 +476,11 @@ namespace Robintty.Npoi.Mapper
             return type;
         }
 
+        /// <summary>
+        /// TODO: what format is ensured?
+        /// </summary>
+        /// <param name="columns"></param>
+        /// <param name="defaultFormats"></param>
         internal static void EnsureDefaultFormats(IEnumerable<IColumnInfo> columns, Dictionary<Type, string> defaultFormats)
         {
             //
@@ -585,23 +586,20 @@ namespace Robintty.Npoi.Mapper
             return true;
         }
 
-        // Gets the concrete type instead of the type of object.
-        internal static Type GetConcreteType<T>(T[] objects)
+        // TODO: When is this used and why can't we be sure about the concrete type?
+        /// <summary>
+        /// Gets the concrete type of the objects in the <see cref="IEnumerable{T}"/> by inspecting the elements.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements in the <see cref="IEnumerable{T}"/>.</typeparam>
+        /// <param name="objects">The <see cref="IEnumerable{T}"/> containing the objects for which to get the type.</param>
+        /// <returns>The <see cref="Type"/> of the objects contained in the <see cref="IEnumerable{T}"/>.</returns>
+        internal static Type GetConcreteType<T>(IEnumerable<T> objects)
         {
             var type = typeof(T);
-            if (type != ObjectType) return type;
+            if (type != typeof(object)) return type;
 
-            foreach (var o in objects)
-            {
-                if (o == null) continue;
-                type = o.GetType();
-                if (type != ObjectType)
-                {
-                    break;
-                }
-            }
-
-            return type;
+            var firstNonNullObject = objects.First(element => element != null && element.GetType() != typeof(object));
+            return firstNonNullObject != null ? firstNonNullObject.GetType() : type;
         }
     }
 }
