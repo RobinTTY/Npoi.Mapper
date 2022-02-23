@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -95,14 +94,14 @@ namespace Robintty.Npoi.Mapper
         /// <param name="dynamicType">The type object created by runtime.</param>
         public static void LoadDynamicAttributes(Dictionary<PropertyInfo, ColumnAttribute> attributes, Dictionary<string, ColumnAttribute> dynamicAttributes, Type dynamicType)
         {
-            foreach (var pair in dynamicAttributes)
+            foreach (var (key, value) in dynamicAttributes)
             {
-                var pi = dynamicType.GetProperty(pair.Key);
+                var pi = dynamicType.GetProperty(key);
 
                 if (pi != null)
                 {
-                    pair.Value.Property = pi;
-                    pair.Value.MergeTo(attributes);
+                    value.Property = pi;
+                    value.MergeTo(attributes);
                 }
             }
         }
@@ -351,9 +350,7 @@ namespace Robintty.Npoi.Mapper
         /// <returns>The mapped <c>PropertyInfo</c> object.</returns>
         public static PropertyInfo GetPropertyInfoByExpression<T>(Expression<Func<T, object>> propertySelector)
         {
-            var expression = propertySelector as LambdaExpression;
-
-            if (expression == null)
+            if (propertySelector is not LambdaExpression expression)
                 throw new ArgumentException("Only LambdaExpression is allowed!", nameof(propertySelector));
 
             var body = expression.Body.NodeType == ExpressionType.MemberAccess ?
@@ -415,7 +412,7 @@ namespace Robintty.Npoi.Mapper
         /// <returns>The column name that represent the order in Excel.</returns>
         public static string GetExcelColumnName(int columnIndex)
         {
-            if (columnIndex < 0 || columnIndex > 16383) throw new ArgumentOutOfRangeException(nameof(columnIndex));
+            if (columnIndex is < 0 or > 16383) throw new ArgumentOutOfRangeException(nameof(columnIndex));
 
             var columnName = string.Empty;
             var result = columnIndex;
