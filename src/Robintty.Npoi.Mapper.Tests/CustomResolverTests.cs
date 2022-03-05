@@ -17,18 +17,24 @@ namespace Robintty.Npoi.Mapper.Tests
             const string commaSeparatedNumber = "5,678";
             var workbook = GetBlankWorkbook();
             var sheet = workbook.GetSheetAt(0);
+
+            // Create necessary rows for the test
             sheet.CreateRow(0);
             sheet.CreateRow(1);
             sheet.CreateRow(2);
+            sheet.CreateRow(3);
 
             // Add some sample data to the worksheet
             sheet.GetRow(0).CreateCell(52).SetCellValue("DotSeparatedNumberHeader");
             sheet.GetRow(1).CreateCell(52).SetCellValue(dotSeparatedNumber);
             sheet.GetRow(2).CreateCell(52).SetCellValue(commaSeparatedNumber);
-            
-            // Create the custom mapping
+            sheet.GetRow(3).CreateCell(52);
+
+
             var mapper = new Mapper(workbook);
             mapper.Map<SampleClass>("DotSeparatedNumberHeader", o => o.ColumnResolverDecimalProperty, (column, target) =>
+            // Custom logic to read cell value from Excel sheet
+            // In this example we want to read 
             {
                 if (column.HeaderValue == null || column.CurrentValue == null) return false;
                 if (column.CurrentValue is string value)
@@ -43,15 +49,26 @@ namespace Robintty.Npoi.Mapper.Tests
                 } 
                 
                 return true;
+            }, (column, source) =>
+            // Custom logic to write cell value to Excel sheet
+            // In this example we want to write a decimal number to the column in the german regional format (formatted as a string)
+            {
+                var value = ((SampleClass) source).ColumnResolverDecimalProperty;
+                column.CurrentValue = value.ToString(new CultureInfo("en-US"));
+                return false;
             });
 
             // Take the previously mapped SampleClass elements from the worksheet
             var importedObjects = mapper.Take<SampleClass>().ToList();
             Assert.IsNotNull(importedObjects);
-            Assert.AreEqual(importedObjects[0].Value.ColumnResolverDecimalProperty, 1.234);
-            Assert.AreEqual(importedObjects[1].Value.ColumnResolverDecimalProperty, 5.678);
-            
-            // TODO: implement tryPut
+            Assert.AreEqual(1.234, importedObjects[0].Value.ColumnResolverDecimalProperty);
+            Assert.AreEqual(5.678, importedObjects[1].Value.ColumnResolverDecimalProperty);
+
+            // Write an element to the worksheet
+            importedObjects[0].Value.ColumnResolverDecimalProperty = 9.876m;
+            mapper.Put(new[] { importedObjects[2].Value });
+            // TODO: this value isn't written anywhere?
+            Assert.AreEqual("9,876", sheet.GetRow(2).GetCell(52).StringCellValue);
         }
 
         [Test]
