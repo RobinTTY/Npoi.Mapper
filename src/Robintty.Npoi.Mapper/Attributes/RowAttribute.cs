@@ -5,31 +5,30 @@ using Robintty.Npoi.Mapper.Extensions;
 namespace Robintty.Npoi.Mapper.Attributes
 {
     /// <summary>
-    /// Specifies attributes for a property that is going to map to a column.
+    /// Applied to a property allows to map values based on a row.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
-    public sealed class ColumnAttribute : Attribute
+    public class RowAttribute : Attribute
     {
         /// <summary>
-        /// The column index.
+        /// The row index.
         /// </summary>
         public int Index { get; internal set; } = -1;
 
         /// <summary>
-        /// The column name.
+        /// The row name.
         /// </summary>
-        public string Name { get; internal set; }
+        public string? Name { get; internal set; }
 
         /// <summary>
+        /// TODO: for what is this needed?
         /// Property name, this is only used for dynamic type.
         /// </summary>
-        public string PropertyName { get; init; }
+        public string? PropertyName { get; init; }
 
-        private PropertyInfo _property;
-        /// <summary>
-        /// Mapped property for this column.
-        /// </summary>
-        public PropertyInfo Property
+        private PropertyInfo? _property;
+
+        public PropertyInfo? Property
         {
             get => _property;
 
@@ -50,6 +49,8 @@ namespace Robintty.Npoi.Mapper.Attributes
             }
         }
 
+        // TODO: Check why all these properties are necessary/what their purpose is
+
         /// <summary>
         /// Get underlying type if property is nullable value type, otherwise return null.
         /// </summary>
@@ -61,13 +62,13 @@ namespace Robintty.Npoi.Mapper.Attributes
         public TypeConverter PropertyUnderlyingConverter { get; private set; }
 
         /// <summary>
-        /// Indicate whether to use the last non-blank value.
-        /// Typically handle the blank error in merged cells.
+        /// Whether to use the last non-blank value.
+        /// Typically handle the blank error in merged cells. // TODO: What does this mean???
         /// </summary>
         internal bool? UseLastNonBlankValue { get; set; }
 
         /// <summary>
-        /// Indicate whether to ignore the property.
+        /// Whether to ignore the property.
         /// </summary>
         internal bool? Ignored { get; set; }
 
@@ -92,37 +93,40 @@ namespace Robintty.Npoi.Mapper.Attributes
         internal Func<IColumnInfo, object, bool> TryPut { get; set; }
 
         /// <summary>
-        /// Creates a new instance of <see cref="ColumnAttribute"/>.
+        /// Creates a new instance of <see cref="RowAttribute"/>.
         /// </summary>
-        public ColumnAttribute()
+        public RowAttribute()
         {
+            // TODO
         }
 
         /// <summary>
-        /// Initialize a new instance of <see cref="ColumnAttribute"/> class.
+        /// Creates a new instance of <see cref="RowAttribute"/>.
         /// </summary>
         /// <param name="index">The index of the column.</param>
-        public ColumnAttribute(ushort index)
+        public RowAttribute(ushort index)
         {
             Index = index;
         }
 
         /// <summary>
-        /// Initialize a new instance of <see cref="ColumnAttribute"/> class.
+        /// Creates a new instance of <see cref="RowAttribute"/>.
         /// </summary>
         /// <param name="name">The name of the column.</param>
-        public ColumnAttribute(string name)
+        public RowAttribute(string name)
         {
             Name = name;
         }
 
+        // TODO: I don't think these are actually necessary
+        // TODO: this should be done in the class that requires the cloned object
         /// <summary>
-        /// Get a member wise clone of this object.
+        /// Get a member wise clone of the <see cref="RowAttribute"/>.
         /// </summary>
         /// <returns>The member wise clone.</returns>
-        public ColumnAttribute Clone()
+        public RowAttribute Clone()
         {
-            return (ColumnAttribute)MemberwiseClone();
+            return (RowAttribute)MemberwiseClone();
         }
 
         /// <summary>
@@ -130,15 +134,16 @@ namespace Robintty.Npoi.Mapper.Attributes
         /// </summary>
         /// <param name="index">The index of column.</param>
         /// <returns>The member wise clone with specified index.</returns>
-        public ColumnAttribute Clone(int index)
+        public RowAttribute Clone(int index)
         {
             var clone = Clone();
             clone.Index = index;
             return clone;
         }
 
+        // TODO: what do these methods do???
         /// <summary>
-        /// Merge properties from a source <see cref="ColumnAttribute"/> object.
+        /// Merge properties from a source <see cref="RowAttribute"/> object.
         /// All properties will be updated from source's specified properties.
         /// </summary>
         /// <param name="source">The object to merge from.</param>
@@ -146,7 +151,7 @@ namespace Robintty.Npoi.Mapper.Attributes
         /// Whether or not to overwrite specified properties from source if source's properties are specified.
         /// Note that Index and Name are considered together as one key property.
         /// </param>
-        public void MergeFrom(ColumnAttribute source, bool overwrite = true)
+        public void MergeFrom(RowAttribute source, bool overwrite = true)
         {
             if (source == null) return;
 
@@ -178,7 +183,7 @@ namespace Robintty.Npoi.Mapper.Attributes
         /// Whether or not to overwrite specified properties to existed object if that object's properties are specified.
         /// Note that Index and Name are considered together as one key property.
         /// </param>
-        public void MergeTo(Dictionary<PropertyInfo, ColumnAttribute> attributes, bool overwrite = true)
+        public void MergeTo(Dictionary<PropertyInfo, RowAttribute> attributes, bool overwrite = true)
         {
             if (attributes == null) return;
             var pi = Property;

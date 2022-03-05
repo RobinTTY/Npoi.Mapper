@@ -835,6 +835,13 @@ namespace Robintty.Npoi.Mapper
             Workbook = WorkbookFactory.Create(new FileStream(path, FileMode.Open));
         }
 
+        /// <summary>
+        /// TODO: Understand the process here
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sheet"></param>
+        /// <param name="objects"></param>
+        /// <param name="overwrite"></param>
         private void Put<T>(ISheet sheet, IEnumerable<T> objects, bool overwrite)
         {
             var sheetName = sheet.SheetName;
